@@ -14,7 +14,6 @@ git clone https://github.com/doiska/projeto-etus.git
 ```
 
 ### Configurações iniciais
-- Antes de iniciar o projeto, dentro da pasta application, copie `.env.default` e renomeie-o para `.env`.
 - O banco de dados já está configurado no arquivo default, mas você pode fazer alterações.
 
 Abra seu [Docker](https://www.docker.com/products/docker-desktop/) e por fim, crie o projeto:
@@ -38,6 +37,11 @@ docker exec -it etus_php bash
 Instale todas as dependências do Laravel:
 ```bash
 composer install
+```
+
+Copie `.env.default` para `.env` e configure as variáveis que desejar.
+```bash
+cp .env.default .env
 ```
 
 Crie uma application key [(docs)](https://laravel.com/docs/11.x/encryption#configuration):
