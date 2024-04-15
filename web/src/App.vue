@@ -11,6 +11,9 @@ const formStatus = ref<{
   status: "idle"
 });
 
+// Isto é apenas para demonstrar o acesso com e sem docker.
+const API_HOST = import.meta.env.VITE_API_HOST ?? "http://localhost"
+
 async function onSubmit(event: Event) {
   if (!(event instanceof SubmitEvent)) {
     return;
@@ -33,32 +36,39 @@ async function onSubmit(event: Event) {
     status: "pending"
   };
 
-  const result = await fetch("http://localhost/api/subscribe", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      email
-    })
-  });
+  try {
+    const result = await fetch(`${API_HOST}/api/subscribe`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        email
+      })
+    });
 
-  const response = await result.json();
-  const hasErrors = "errors" in response;
+    const response = await result.json();
+    const hasErrors = "errors" in response;
 
-  if (!result.ok || hasErrors) {
+    if (!result.ok || hasErrors) {
+      formStatus.value = {
+        status: "error",
+        message: response.message || "Ocorreu um erro inesperado, tente novamente mais tarde."
+      };
+      return;
+    }
+
+    formStatus.value = {
+      status: "success",
+      message: response.message || "Seu email foi cadastrado com sucesso, bem vindo (a)!"
+    };
+  } catch (e) {
     formStatus.value = {
       status: "error",
-      message: response.message || "Ocorreu um erro inesperado, tente novamente mais tarde."
-    };
-    return;
+      message: "Ocorreu um erro inesperado, tente novamente mais tarde."
+    }
   }
-
-  formStatus.value = {
-    status: "success",
-    message: response.message || "Seu email foi cadastrado com sucesso, bem vindo (a)!"
-  };
 }
 
 </script>

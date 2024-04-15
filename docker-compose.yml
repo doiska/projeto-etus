@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  webserver:
+  etus_reverse_proxy:
     image: nginx:stable-alpine
-    container_name: reverse_proxy
+    container_name: etus_reverse_proxy
     ports:
       - "80:80"
       - "443:443"
@@ -12,8 +12,8 @@ services:
     volumes:
       - .docker/nginx:/etc/nginx/conf.d
       - ./application:/var/www/html
-  php:
-    container_name: php
+  etus_php:
+    container_name: etus_php
     build:
       context: .
       dockerfile: .docker/php/Dockerfile
@@ -23,14 +23,28 @@ services:
       APP_NAME: "laravel"
     volumes:
       - ./application:/var/www/html
-      - ./logs/php.log/:/var/log/fpm-php.www.log
+      - ./logs/:/var/log
     depends_on:
-      - mysql
-      - webserver
+      - etus_db
+      - etus_reverse_proxy
     networks:
       - internal
-  mysql:
-    container_name: db
+  etus_vue:
+    container_name: etus_vue
+    build:
+      context: .
+      dockerfile: .docker/frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    networks:
+      - internal
+    environment:
+      VITE_API_HOST: ""
+  etus_db:
+    container_name: etus_db
     restart: unless-stopped
     image: mysql:latest
     ports:
