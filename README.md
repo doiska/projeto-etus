@@ -13,9 +13,6 @@ Clone o projeto em seu diretório local:
 git clone https://github.com/doiska/projeto-etus.git
 ```
 
-### Configurações iniciais
-- O banco de dados já está configurado no arquivo default, mas você pode fazer alterações.
-
 Abra seu [Docker](https://www.docker.com/products/docker-desktop/) e por fim, crie o projeto:
 ```bash
 docker compose up
